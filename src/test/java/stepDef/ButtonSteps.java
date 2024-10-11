@@ -8,8 +8,6 @@ import io.cucumber.java.en.When;
 import org.testng.Assert;
 import pages.ButtonPages;
 
-import java.time.Duration;
-
 public class ButtonSteps {
 
 
@@ -23,9 +21,13 @@ public class ButtonSteps {
     @Then("i should see message as {string}")
     public void i_should_see_message_as(String string) throws InterruptedException {
         Thread.sleep(5000);
-
         Assert.assertEquals(string,buttonPages.getClickMeText());
+    }
 
+    @Then("i should not see message as {string}")
+    public void i_should_not_see_message_as(String string) throws InterruptedException {
+        Thread.sleep(5000);
+        Assert.assertNotEquals(string,buttonPages.getClickMeText());
     }
 
     @When("i click on {string} button")
