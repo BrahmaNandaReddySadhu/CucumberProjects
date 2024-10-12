@@ -7,31 +7,32 @@ import io.cucumber.java.en.When;
 
 import org.testng.Assert;
 import pages.ButtonPages;
+import utils.CommonUtils;
 
 public class ButtonSteps {
 
 
     ButtonPages buttonPages = new ButtonPages(DriverFactory.getDriver());
+    CommonUtils waitUtils= new CommonUtils();
 
     @Given("i launch {string} website")
     public void i_launch_website(String url) {
         DriverFactory.getDriver().get(url);
     }
 
-    @Then("i should see message as {string}")
-    public void i_should_see_message_as(String string) throws InterruptedException {
-        Thread.sleep(5000);
-        Assert.assertEquals(string,buttonPages.getClickMeText());
-    }
-
-    @Then("i should not see message as {string}")
-    public void i_should_not_see_message_as(String string) throws InterruptedException {
-        Thread.sleep(5000);
-        Assert.assertNotEquals(string,buttonPages.getClickMeText());
-    }
-
     @When("i click on {string} button")
     public void iClickOnButton(String buttonName) {
         buttonPages.clickElementBasedOnText(buttonName);
+    }
+
+    @Then("i should see message as {string} for {string} button")
+    public void iShouldSeeMessageAsForButton(String message, String buttonName) {
+        Assert.assertEquals(message,buttonPages.getButtonText(buttonName));
+    }
+
+    @Then("i should not see message as {string} for {string} button")
+    public void iShouldNotSeeMessageAsForButton(String message, String buttonName) {
+        System.out.println("text -->"+buttonPages.getButtonText(buttonName));
+        Assert.assertNotEquals(message,buttonPages.getButtonText(buttonName));
     }
 }

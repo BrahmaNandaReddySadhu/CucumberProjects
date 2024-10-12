@@ -3,13 +3,16 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.CommonUtils;
 
 import java.time.Duration;
 
 public class ButtonPages {
 
     private WebDriver driver;
+    CommonUtils commonUtils = new CommonUtils();
 
     // constructor
     public ButtonPages(WebDriver driver) {
@@ -29,16 +32,21 @@ public class ButtonPages {
         } else if (text.equalsIgnoreCase("Right Click Me")) {
             driver.findElement(rightClickMe).click();
         } else {
-            driver.findElement(doubleClickMe).click();
+            Actions actions = new Actions(driver);
+            actions.moveToElement(driver.findElement(doubleClickMe)).doubleClick().build().perform();
         }
     }
 
-    public String getClickMeText() {
-        return driver.findElement(clickMetext).getText();
-    }
-
-    public String getDoubleClickMeText() {
-        return driver.findElement(doubleClickText).getText();
+    public String getButtonText(String buttonName) {
+        String buttonText=null;
+        if(buttonName.equalsIgnoreCase("click me")) {
+            commonUtils.waitForElementToBeVisible(driver, clickMetext, 10);
+            buttonText=  driver.findElement(clickMetext).getText();
+        } else if (buttonName.equalsIgnoreCase("double click me")) {
+            commonUtils.waitForElementToBeVisible(driver, doubleClickText, 10);
+            buttonText=  driver.findElement(doubleClickText).getText();
+        }
+        return buttonText;
     }
 
 
