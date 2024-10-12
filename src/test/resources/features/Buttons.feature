@@ -1,4 +1,4 @@
-@Button
+@Button @Web
 Feature: As a user click on button and verify text after perform the action
 
   @Negative @Button_001
