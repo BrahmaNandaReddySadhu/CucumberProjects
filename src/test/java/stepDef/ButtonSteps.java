@@ -1,6 +1,7 @@
 package stepDef;
 
 import driverfactory.DriverFactory;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -34,5 +35,10 @@ public class ButtonSteps {
     public void iShouldNotSeeMessageAsForButton(String message, String buttonName) {
         System.out.println("text -->"+buttonPages.getButtonText(buttonName));
         Assert.assertNotEquals(message,buttonPages.getButtonText(buttonName));
+    }
+
+    @And("i upload the file with the customerName")
+    public void iUploadTheFileWithTheCustomerName() {
+
     }
 }
