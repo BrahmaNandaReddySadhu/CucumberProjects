@@ -9,7 +9,8 @@ pipeline {
         }
         stage('Repo Cloning') {
             steps {
-                git credentialsId: '4c9fd993-4a83-4067-9a43-7f047e1f8126', url: 'https://github.com/BrahmaNandaReddySadhu/CucumberProjects.git'
+                git credentialsId: 'github-credentials',
+               url: 'https://github.com/BrahmaNandaReddySadhu/CucumberProjects.git'
             }
         }
         stage('Test') {
