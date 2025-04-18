@@ -11,7 +11,7 @@ Feature: As a user click on button and verify text after perform the action
   Scenario: checking buttons with single click
     Given i launch "https://www.tutorialspoint.com/selenium/practice/buttons.php" website
     When i click on "click me" button
-    Then i should see message as "You have done a dynamic click" for "click me" button
+    Then i should see message as "You have done a dynamic clicks" for "click me" button
 
   @Positive @Button_003
   Scenario: checking buttons with double click
