@@ -14,6 +14,7 @@ public class ExtentReportManager {
 
     public static ExtentReports getExtentReports(){
         if(extentReports == null){
+            System.out.println("Initializing the Extent Report ...");
             String timeStamp= new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String reportPath = System.getProperty("user.dir")+"test-output/ExtentReport_"+timeStamp+".html";
             ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
@@ -29,6 +30,7 @@ public class ExtentReportManager {
     }
 
     public static void createTest(String testName){
+        System.out.println("creating the test by creatingthe extrent repor obejct*********");
         ExtentTest test= getExtentReports().createTest(testName);
         extentTest.set(test);
     }
@@ -39,8 +41,15 @@ public class ExtentReportManager {
 
     public static void flushReport(){
         if(extentReports!=null){
+            System.out.println("Flushing ExtentReports....");
             extentReports.flush();
+        }else {
+            System.out.println("Extent Report is null at the flush...");
         }
+    }
+
+    public static void unload() {
+        extentTest.remove();
     }
 
 }

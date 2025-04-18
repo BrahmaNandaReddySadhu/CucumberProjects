@@ -7,6 +7,7 @@ import io.cucumber.java.Scenario;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterClass;
 import utils.ConfigReader;
 import utils.ExtentReportManager;
 
@@ -69,10 +70,9 @@ public class ApplicationHooks {
 
     }
 
-    @After(order=2)
-    public void afterScenario(Scenario scenario){
+    @After(order = 2)
+    public void unloadExtent() {
         ExtentReportManager.flushReport();
-        System.out.println("5 flushong0--->");
     }
 
 }
