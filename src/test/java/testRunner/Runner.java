@@ -7,7 +7,7 @@ import io.cucumber.testng.CucumberOptions;
 
 @CucumberOptions(
         features = "classpath:features",
-        glue = {"classpath:stepDef","Hooks"},
+        glue = {"classpath:stepDef","hooks"},
         plugin = {"pretty",
                 "html:target/cucumber-html-report/report.html",
                 "json:target/cucumber-json-report/report.json",

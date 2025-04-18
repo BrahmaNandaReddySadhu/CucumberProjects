@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Cucumber" time="16.602" tests="4" skipped="0" failures="0" errors="0">
+<testcase classname="As a user click on button and verify text after perform the action" name="checking buttons" time="6.241">
+<system-out><![CDATA[
+Given i launch "https://www.tutorialspoint.com/selenium/practice/buttons.php" website.passed
+When i click on "double click me" button....................................passed
+Then i should not see message as "You have done a dynamic click" for "double click me" button.passed
+]]></system-out>
+</testcase>
+<testcase classname="As a user click on button and verify text after perform the action" name="checking buttons" time="3.247">
+<system-out><![CDATA[
+Given i launch "https://www.tutorialspoint.com/selenium/practice/buttons.php" website.passed
+When i click on "click me" button...........................................passed
+Then i should see message as "You have done a dynamic click" for "click me" button.passed
+]]></system-out>
+</testcase>
+<testcase classname="As a user click on button and verify text after perform the action" name="checking buttons" time="3.156">
+<system-out><![CDATA[
+Given i launch "https://www.tutorialspoint.com/selenium/practice/buttons.php" website.passed
+When i click on "Double Click Me" button....................................passed
+Then i should see message as "You have Double clicked" for "double click me" button.passed
+]]></system-out>
+</testcase>
+<testcase classname="Place the order by upload the file" name="upload the file" time="3.581">
+<system-out><![CDATA[
+Given i launch "https://www.tutorialspoint.com/selenium/practice/upload-download.php" website.passed
+And i upload the file with the customerName.................................passed
+]]></system-out>
+</testcase>
+</testsuite>
