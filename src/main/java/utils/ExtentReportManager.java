@@ -62,6 +62,7 @@ public class ExtentReportManager {
             System.out.println("creating the test by passing the scenario name");
             ExtentTest test = getExtentReports().createTest(testName);
             extentTest.set(test);
+            ScenarioContext.setCurrentTest(test);
         } catch (Exception e) {
             System.err.println("Error while creating test" + e.getMessage());
         }

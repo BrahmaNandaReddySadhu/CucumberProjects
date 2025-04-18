@@ -13,7 +13,7 @@ import org.testng.annotations.*;
                 "html:target/cucumber-html-report/report.html",
                 "json:target/cucumber-json-report/report.json",
                 "junit:target/cucumber-junit-report/report.xml",
-               // "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
+                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"
                 },
         monochrome = true
 
@@ -22,7 +22,7 @@ import org.testng.annotations.*;
 public class Runner extends AbstractTestNGCucumberTests {
 
     @Override
-    @DataProvider(parallel = false)
+    @DataProvider(parallel = true)
     public Object[][] scenarios(){
         return super.scenarios();
     }

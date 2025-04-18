@@ -4,6 +4,7 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import driverfactory.DriverFactory;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.BeforeStep;
 import io.cucumber.java.Scenario;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -13,6 +14,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import utils.ConfigReader;
 import utils.ExtentReportManager;
+import utils.ScenarioContext;
 
 import java.sql.Driver;
 import java.sql.Time;
@@ -69,6 +71,11 @@ public class ApplicationHooks {
 
     }
 
+    @BeforeStep
+    public void beforeStep(Scenario scenario){
+        ScenarioContext.getCurrentTest().info("Steps: "+scenario.getName());
+    }
+
     @Before(order = 2)
     public void initializeBrowser() {
         try {
@@ -87,9 +94,9 @@ public class ApplicationHooks {
         try {
             System.out.println("setting up test scenario -->:" + scenario.getName());
             ExtentReportManager.createTest(scenario.getName());
-
             // Adding tags to reports if needed
             scenario.getSourceTagNames().forEach(tag -> ExtentReportManager.getTest().assignCategory(tag));
+
         } catch (Exception e) {
             System.err.println("Failed to setup Scenarioe:" + e.getMessage());
         }
