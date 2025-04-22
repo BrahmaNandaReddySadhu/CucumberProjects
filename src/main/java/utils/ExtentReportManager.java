@@ -11,82 +11,31 @@ import java.util.Date;
 
 public class ExtentReportManager {
 
-    private static ExtentReports extentReports;
-    private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
+    private static ExtentReports extent;
 
-    public static ExtentReports getExtentReports() {
-        if (extentReports == null) {
-            try {
-                //1. creating file directory if doed not exists
-
-                File reportDirectory = new File(System.getProperty("user.dir") + "/target/test-output");
-                if (!reportDirectory.exists()) {
-                    reportDirectory.mkdir();
-                }
-
-                //2 . generating the time stamp
-
-                String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-
-                String reportPath = reportDirectory.getAbsolutePath() + "/ExtentReport_" + timeStamp + ".html";
-                System.out.println("Extent Report Path will be saved at this location:" + reportPath);
-
-
-                //3. Configure the Spark Report
-
-                ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-                sparkReporter.config().setDocumentTitle("Automation Test Report");
-                sparkReporter.config().setReportName("Cucumber Test Execution Report");
-                sparkReporter.config().setTheme(Theme.DARK);
-                sparkReporter.config().setEncoding("utf-8");
-
-                //4 Initialize the Extent Reports
-
-                extentReports = new ExtentReports();
-                extentReports = new ExtentReports();
-                extentReports.attachReporter(sparkReporter);
-                extentReports.setSystemInfo("OS", System.getProperty("os.name"));
-                extentReports.setSystemInfo("Java Version", System.getProperty("java.version"));
-                extentReports.setSystemInfo("Tester", "Brahmananda Reddy");
-                extentReports.setSystemInfo("Environment", "QA");
-
-            } catch (Exception exception) {
-                System.err.println("Error while initializing Extent Report: " + exception.getMessage());
-            }
+    public static synchronized ExtentReports getInstance() {
+        if (extent == null) {
+            createInstance("target/test-out/customExtentReport.html");
         }
-        return extentReports;
+        return extent;
     }
 
-    public static synchronized void createTest(String testName) {
-        try {
-            System.out.println("creating the test by passing the scenario name");
-            ExtentTest test = getExtentReports().createTest(testName);
-            extentTest.set(test);
-            ScenarioContext.setCurrentTest(test);
-        } catch (Exception e) {
-            System.err.println("Error while creating test" + e.getMessage());
-        }
+    public static ExtentReports createInstance(String fileName) {
+        ExtentSparkReporter sparkReporter = new ExtentSparkReporter(fileName);
+        sparkReporter.config().setReportName("Regression Test Suite");
+        sparkReporter.config().setTheme(Theme.STANDARD);
+        sparkReporter.config().setDocumentTitle("My Custom Automation Report");
+        sparkReporter.config().setEncoding("Utf-8");
+
+        extent = new ExtentReports();
+        extent.attachReporter(sparkReporter);
+
+        extent.setSystemInfo("os", System.getProperty("os.name"));
+        extent.setSystemInfo("Environonment", "QA");
+        extent.setSystemInfo("User", System.getProperty("user.name"));
+
+        return extent;
     }
 
-    public static ExtentTest getTest() {
-        return extentTest.get();
-    }
-
-    public static synchronized void flushReport() {
-        if (extentReports != null) {
-            try {
-                System.out.println("Flushing ExtentReports....");
-                extentReports.flush();
-            } catch (Exception e) {
-                System.err.println("Error while flushing Extent Report:" + e.getMessage());
-            }
-        } else {
-            System.out.println("Extent Report is null at the flush...");
-        }
-    }
-
-    public static void unload() {
-        extentTest.remove();
-    }
 
 }
