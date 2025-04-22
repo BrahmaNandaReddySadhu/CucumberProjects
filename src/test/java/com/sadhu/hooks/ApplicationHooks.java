@@ -1,4 +1,4 @@
-package hooks;
+package com.sadhu.hooks;
 
 import com.aventstack.extentreports.MediaEntityBuilder;
 import driverfactory.DriverFactory;
