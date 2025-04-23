@@ -64,12 +64,6 @@
             <version>5.1.2</version>
         </dependency>
         <dependency>
-            <groupId>tech.grasshopper</groupId>
-            <artifactId>extentreports-cucumber7-adapter</artifactId>
-            <version>1.14.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-devtools-v135</artifactId>
             <version>4.31.0</version>
@@ -85,11 +79,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version> <!-- Latest version as of now -->
+                <version>3.1.2</version> <!-- Latest version as of now -->
                 <configuration>
                     <includes>
                         <include>**/*Runner.java</include> <!-- Or the pattern that matches your Cucumber runner class -->
                     </includes>
+                    <parallel>methods</parallel>
+                    <threadCount>4</threadCount>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
             <!-- Plugin to generate Cucumber HTML report -->

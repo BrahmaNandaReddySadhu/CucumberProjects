@@ -7,15 +7,17 @@ import org.testng.annotations.*;
 
 @CucumberOptions(
         features = "classpath:features",
-        glue = {"classpath:com.sadhu.stepDef", "com.sadhu.hooks","com.sadhu.listeners"},
+        glue = {"com.sadhu.stepDef", "com.sadhu.hooks", "com.sadhu.listeners"},
         plugin = {"pretty",
-                "html:target/cucumber-html-report/report.html",
-                "json:target/cucumber-json-report/report.json",
-                "junit:target/cucumber-junit-report/report.xml",
-               // "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+                "html:target/cucumber-reports/cucumber-html-report.html",
+                "json:target/cucumber-reports/cucumber.json",
+                "junit:target/cucumber-reports/cucumber.xml",
+                "timeline:target/cucumber-reports/timeline",
+                "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
                 "com.sadhu.listeners.CucumberExtentListener"
         },
-        monochrome = true
+        monochrome = true,
+        publish = true
 
 )
 public class Runner extends AbstractTestNGCucumberTests {
