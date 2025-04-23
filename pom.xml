@@ -69,6 +69,12 @@
             <version>4.31.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>maven-cucumber-reporting</artifactId>
+            <version>5.8.5</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -89,27 +95,28 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
-            <!-- Plugin to generate Cucumber HTML report -->
+
             <plugin>
                 <groupId>net.masterthought</groupId>
-                <artifactId>cucumber-reporting</artifactId>
-                <version>5.7.0</version>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.8.5</version>
                 <executions>
                     <execution>
-                        <id>generate-cucumber-report</id>
+                        <id>generate-cucumber-html-report</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <projectName>Cucumber Beautiful Report</projectName>
-                            <reportDirectory>${project.build.directory}/cucumber-html-reports</reportDirectory>
+                            <projectName>Your Project Name</projectName>
                             <jsonFiles>
-                                <param>${project.build.directory}/cucumber-reports/Cucumber.json</param>
+                                <param>${project.build.directory}/cucumber-reports/cucumber.json</param>
                             </jsonFiles>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        </plugins>
+            </plugin>
+            <!-- Plugin to generate Cucumber HTML report -->
+        </plugins>
     </build>
 </project>
