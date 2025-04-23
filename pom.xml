@@ -85,7 +85,7 @@
                         <include>**/*Runner.java</include> <!-- Or the pattern that matches your Cucumber runner class -->
                     </includes>
                     <parallel>methods</parallel>
-                    <threadCount>4</threadCount>
+                    <threadCount>2</threadCount>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
@@ -93,18 +93,35 @@
             <plugin>
                 <groupId>net.masterthought</groupId>
                 <artifactId>cucumber-reporting</artifactId>
-                <version>5.7.0</version>
+                <version>5.7.6</version>  <!-- Latest stable version -->
                 <executions>
                     <execution>
-                        <id>execution</id>
+                        <id>generate-reports</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <!-- Basic Settings -->
                             <projectName>My Cucumber Project</projectName>
-                            <reportDirectory>${project.build.directory}/cucumber-reports</reportDirectory>
-                            <cucumberOutput>${project.build.directory}/cucumber.json</cucumberOutput>
+                            <outputDirectory>${project.build.directory}/cucumber-reports/masterthought</outputDirectory>
+                            <inputDirectory>${project.build.directory}</inputDirectory>
+                            <jsonFiles>
+                                <param>**/cucumber.json</param>
+                            </jsonFiles>
+
+                            <!-- Blue Theme Customization -->
+                            <classificationFiles>
+                                <param>src/test/resources/cucumber-theme.json</param>
+                            </classificationFiles>
+
+                            <!-- Advanced Settings -->
+                            <parallelTesting>true</parallelTesting>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <buildNumber>${BUILD_NUMBER}</buildNumber>
+                            <trendsLimit>10</trendsLimit>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <qualifier>build-${BUILD_NUMBER}</qualifier>
                         </configuration>
                     </execution>
                 </executions>
