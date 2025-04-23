@@ -93,39 +93,23 @@
             <plugin>
                 <groupId>net.masterthought</groupId>
                 <artifactId>cucumber-reporting</artifactId>
-                <version>5.7.6</version>  <!-- Latest stable version -->
+                <version>5.7.0</version>
                 <executions>
                     <execution>
-                        <id>generate-reports</id>
+                        <id>generate-cucumber-report</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <!-- Basic Settings -->
-                            <projectName>My Cucumber Project</projectName>
-                            <outputDirectory>${project.build.directory}/cucumber-reports/masterthought</outputDirectory>
-                            <inputDirectory>${project.build.directory}</inputDirectory>
+                            <projectName>Cucumber Beautiful Report</projectName>
+                            <reportDirectory>${project.build.directory}/cucumber-html-reports</reportDirectory>
                             <jsonFiles>
-                                <param>**/cucumber.json</param>
+                                <param>${project.build.directory}/cucumber-reports/Cucumber.json</param>
                             </jsonFiles>
-
-                            <!-- Blue Theme Customization -->
-                            <classificationFiles>
-                                <param>src/test/resources/cucumber-theme.json</param>
-                            </classificationFiles>
-
-                            <!-- Advanced Settings -->
-                            <parallelTesting>true</parallelTesting>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <buildNumber>${BUILD_NUMBER}</buildNumber>
-                            <trendsLimit>10</trendsLimit>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <qualifier>build-${BUILD_NUMBER}</qualifier>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-        </plugins>
+            </plugin>        </plugins>
     </build>
 </project>
