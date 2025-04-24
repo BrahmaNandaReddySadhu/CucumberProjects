@@ -9,25 +9,23 @@ import org.testng.annotations.*;
         features = "classpath:features",
         glue = {"com.sadhu.stepDef", "com.sadhu.hooks", "com.sadhu.listeners"},
         plugin = {"pretty",
-                "html:target/cucumber-reports/cucumber-html-report.html",
-                "json:target/cucumber-reports/cucumber.json",
-                "junit:target/cucumber-reports/cucumber.xml",
-                "timeline:target/cucumber-reports/timeline",
+                "html:target/cucumber-html-report.html",
+                "json:target/cucumber.json",
+                "junit:target/cucumber.xml",
+                "timeline:target/timeline",
                 "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
                 "com.sadhu.listeners.CucumberExtentListener"
         },
-        monochrome = true,
-        publish = true
+        monochrome = true
 
 )
 public class Runner extends AbstractTestNGCucumberTests {
 
     @Override
-    @DataProvider(parallel = true)
+    @DataProvider(parallel = false)
     public Object[][] scenarios() {
         return super.scenarios();
     }
 
 
 }
-
