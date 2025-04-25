@@ -70,8 +70,19 @@ public class ExtentReportManager {
             // Copy screenshot to target directory
             Files.copy(screenshot.toPath(), new File(screenshotPath).toPath());
 
-            // Attach screenshot to report (relative path for ExtentReports)
-            test.addScreenCaptureFromPath("../screenshots/" + screenshotName, "Screenshot on Failure");
+            // Dynamically construct the screenshot URL using Jenkins environment variables
+            String jobUrl = System.getenv("JOB_URL"); // e.g., http://localhost:8080/job/CucumberExtentReport/
+            String screenshotUrl;
+            if (jobUrl != null) {
+                // Running in Jenkins environment
+                screenshotUrl = jobUrl + "ws/target/screenshots/" + screenshotName;
+            } else {
+                // Fallback for local execution (relative path or local URL)
+                screenshotUrl = "../screenshots/" + screenshotName;
+            }
+
+            // Attach screenshot to report
+            test.addScreenCaptureFromPath(screenshotUrl, "Screenshot on Failure");
         } catch (IOException e) {
             test.log(com.aventstack.extentreports.Status.WARNING, "Failed to capture screenshot: " + e.getMessage());
         }
