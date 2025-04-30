@@ -76,6 +76,7 @@ public class CucumberExtentListener implements ConcurrentEventListener {
             case FAILED:
                 test.log(com.aventstack.extentreports.Status.FAIL, stepText);
                 test.fail(event.getResult().getError());
+                ExtentReportManager.takeScreenshot(event,test);
                 break;
             case SKIPPED:
                 test.log(com.aventstack.extentreports.Status.SKIP, stepText);
