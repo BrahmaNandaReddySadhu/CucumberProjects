@@ -39,7 +39,10 @@ public class ExtentReportManager {
         sparkReporter.config().setDocumentTitle("My Custom Automation Report");
         sparkReporter.config().setEncoding("Utf-8");
         sparkReporter.config().setOfflineMode(true);
-        sparkReporter.config().setCss(System.getProperty("user.dir")+"/src/test/resources/spark-resources/spark-style.css");
+        sparkReporter.config().setOfflineMode(true);
+        String cssPath = Paths.get("src", "test", "resources", "spark-resources", "css", "spark-style.css").toAbsolutePath().toUri().toString();
+        sparkReporter.config().setCss(cssPath);
+
 
         extent = new ExtentReports();
         extent.attachReporter(sparkReporter);
