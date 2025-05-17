@@ -42,6 +42,7 @@ node {
         def file = 'target/failedrerun.txt'
         if( fileExists(file) && readFile(file).trim()){
         echo 'failed scenarioes are available , Triggering rerun scenarioes...'
+         sh 'mvn test -Dtest=com.sadhu.testRunner.RerunTestRunner'
         }else{
             echo 'No failed scenarioes are available.'
         }
