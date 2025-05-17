@@ -6,7 +6,7 @@ import io.cucumber.testng.CucumberOptions;
 import org.testng.annotations.*;
 
 @CucumberOptions(
-        features = "target/failedrerun.txt",
+        features = "@target/failedrerun.txt",
         glue = {"com.sadhu.stepDef", "com.sadhu.hooks", "com.sadhu.listeners"},
         plugin = {"pretty",
                 "html:target/cucumber-html-report.html",
