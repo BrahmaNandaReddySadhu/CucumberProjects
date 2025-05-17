@@ -1,0 +1,38 @@
+pipeline{
+agent any
+stages{
+
+stage("Clean WorkSpace"){
+ deleteDir();
+}
+
+stage("Checkout code from git repo"){
+git url:'https://github.com/BrahmaNandaReddySadhu/CucumberProjects',
+branch: 'master'
+}
+
+stage("Running Test"){
+
+try{
+sh 'mvn clean test'
+}catch(err){
+echo "Initiation of the test cases is failed"
+echo "error message is : ${err.getMessage()}"
+}
+
+stage("ReRun failed cases"){
+ def file = 'target/failedrerun.txt'
+ if( fileExists(file) && readFile(file).trim() ){
+ echo "failed scenarioes are avaiable, Triggering the rerun scenarioes..."
+  sh 'mvn test -Dtest=com.sadhu.testRunner.RerunTestRunner'
+ }else{
+  echo 'No failed scenarios are available'
+ }
+}
+
+stage("Archiever reports"){
+archiveArtifacts artifacts: 'target/test-output/SparkReport/**', fingerprint: true
+}
+}
+}
+}
