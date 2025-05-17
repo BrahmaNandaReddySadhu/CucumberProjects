@@ -18,6 +18,10 @@ Jenkins.instance.save()
 
 if you want to integrate with the cicd then create a pipeline job 
 scripted pipeline
+
+
+
+
 node {
     stage("Clean work space"){
         deleteDir()
@@ -48,6 +52,3 @@ node {
     
     
 }
-
-
-
