@@ -38,6 +38,8 @@ public class ExtentReportManager {
         sparkReporter.config().setTheme(Theme.STANDARD);
         sparkReporter.config().setDocumentTitle("My Custom Automation Report");
         sparkReporter.config().setEncoding("Utf-8");
+        sparkReporter.config().setOfflineMode(true);
+        sparkReporter.config().setCss(System.getProperty("user.dir")+"/src/test/resources/spark-resources/spark-style.css");
 
         extent = new ExtentReports();
         extent.attachReporter(sparkReporter);
