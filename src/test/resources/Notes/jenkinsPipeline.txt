@@ -1,0 +1,250 @@
+// the following is the scripted pipeliens
+// the following lines will execute the test cases first and based on the failure gain failed cases will run
+
+node {
+    stage("Clean work space"){
+        deleteDir()
+    }
+    stage("checkout code from git hub"){
+        git url: 'https://github.com/BrahmaNandaReddySadhu/CucumberProjects.git',
+        branch: 'master'
+    }
+    stage("Initiate test execution"){
+        try{
+            sh 'mvn clean test'
+        }catch(err){
+            echo "initiate test run failed. proceeding to rerun if scenarioes are failed"
+              echo "Error details: ${err.getMessage()}"
+        }
+    }
+    stage("Re run failed scenarioes"){
+        def file = 'target/failedrerun.txt'
+        if( fileExists(file) && readFile(file).trim()){
+        echo 'failed scenarioes are available , Triggering rerun scenarioes...'
+        try{
+            sh 'mvn test -Dtest=com.sadhu.testRunner.RerunTestRunner'
+        }
+        catch(err){
+            echo "Still failures are there in the rerun also so making build as unstable"
+            currentBuild.result = 'UNSTABLE'
+        }
+        }else{
+            echo 'No failed scenarioes are available.'
+        }
+    }
+    stage("Archieve Reports "){
+            archiveArtifacts artifacts: 'target/test-output/SparkReport/**', fingerprint: true
+    }
+
+
+}
+
+
+
+
+// following is the pipeline what will do is it combine the result of the original and rerun failed cases
+// when you want to combine report
+node {
+    def REPORT_BASE_DIR = 'target/test-out'
+    def MAIN_REPORT_FILE = "${REPORT_BASE_DIR}/customExtentReport.html"
+    def FAILEDTEST_FILE = "target/failedrerun.txt"
+    def RERUN_REPORT_DIR = "${REPORT_BASE_DIR}/rerun"
+    def ORIGINAL_REPORT_DIR = "${REPORT_BASE_DIR}/original"
+
+    stage("Clean workspace") {
+        deleteDir()
+    }
+
+    stage("Checkout project") {
+        git url: 'https://github.com/BrahmaNandaReddySadhu/CucumberProjects.git', branch: 'master'
+    }
+
+    stage("Initial Test Run") {
+        try {
+            echo "Running Initial Test suite....."
+            sh 'mvn clean test'
+
+            if (fileExists(MAIN_REPORT_FILE)) {
+                sh "mkdir -p ${ORIGINAL_REPORT_DIR}"
+                sh "cp -r ${MAIN_REPORT_FILE} ${ORIGINAL_REPORT_DIR}/customExtentReport.html"
+                echo "Initial Test Reports are Archived..."
+            } else {
+                echo "Main Report is not available after initial run.."
+                currentBuild.result = 'UNSTABLE'
+            }
+        } catch (err) {
+            echo "Initial Test Run failed: ${err.getMessage()}"
+            currentBuild.result = 'FAILURE'
+        }
+    }
+
+    stage("Re-Run Failed Cases") {
+        if (fileExists(FAILEDTEST_FILE) && readFile(FAILEDTEST_FILE).trim().length() > 0) {
+            try {
+                echo "Found failed cases and executing the rerun....."
+                sh "mvn test -Dtest=com.sadhu.testRunner.RerunTestRunner"
+
+                if (fileExists(MAIN_REPORT_FILE)) {
+                    sh "mkdir -p ${RERUN_REPORT_DIR}"
+                    sh "cp ${MAIN_REPORT_FILE} ${RERUN_REPORT_DIR}/customExtentReport.html"
+                    echo "Re-run report also archived..."
+
+                    def failedTest = readFile(FAILEDTEST_FILE).trim()
+                    def failedCount = failedTest.split("\n").length
+                    echo "Re-ran ${failedCount} test cases"
+                }
+            } catch (err) {
+                echo "Re-run failed test encountered an error: ${err.getMessage()}"
+                currentBuild.result = 'UNSTABLE'
+            }
+        } else {
+            echo "No failed test cases are available...."
+        }
+    }
+
+    stage("Publish reports") {
+        if (fileExists("${ORIGINAL_REPORT_DIR}/customExtentReport.html")) {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: ORIGINAL_REPORT_DIR,
+                reportFiles: 'customExtentReport.html',
+                reportName: 'Original Report',sandbox: false
+            ])
+        }
+
+        if (fileExists("${RERUN_REPORT_DIR}/customExtentReport.html")) {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: RERUN_REPORT_DIR,
+                reportFiles: 'customExtentReport.html',
+                reportName: 'Failed Test Re-run Report',sandbox: false
+            ])
+        }
+
+        archiveArtifacts artifacts: "${REPORT_BASE_DIR}/**/*.html", fingerprint: true
+
+        if (fileExists(FAILEDTEST_FILE)) {
+            archiveArtifacts artifacts: FAILEDTEST_FILE, fingerprint: true
+        }
+    }
+
+    stage("Final Status") {
+        if (currentBuild.result == null) {
+            currentBuild.result = 'SUCCESS'
+        }
+
+        echo "Build status is: ${currentBuild.result}"
+        echo "Original Report: ${env.BUILD_URL}HTML_20Report/"
+        if (fileExists("${RERUN_REPORT_DIR}/customExtentReport.html")) {
+            echo "Rerun Report: ${env.BUILD_URL}HTML_20Report_20Failed_20Test_20Re-run_20Report/"
+        }
+    }
+}
+
+
+
+
+//  sparl.html
+
+node {
+    // Define report paths
+    def SPARK_REPORT_DIR = 'target/test-output/SparkReport'
+    def SPARK_REPORT_FILE = 'Spark.html'
+    def FULL_REPORT_PATH = "${SPARK_REPORT_DIR}/${SPARK_REPORT_FILE}"
+    def FAILED_TESTS_FILE = 'target/failedrerun.txt'
+    def ORIGINAL_REPORTS_DIR = "${SPARK_REPORT_DIR}/original"
+    def RERUN_REPORTS_DIR = "${SPARK_REPORT_DIR}/rerun"
+
+    stage("Clean workspace") {
+        deleteDir()
+    }
+
+    stage("Checkout project") {
+        git url: 'https://github.com/BrahmaNandaReddySadhu/CucumberProjects.git', branch: 'master'
+    }
+
+    stage("Initial Test Run") {
+        try {
+            echo "Running initial test suite"
+            sh 'mvn clean test'
+
+            // Store original report
+            if (fileExists(FULL_REPORT_PATH)) {
+                sh "mkdir -p ${ORIGINAL_REPORTS_DIR}"
+                sh "cp ${FULL_REPORT_PATH} ${ORIGINAL_REPORTS_DIR}/${SPARK_REPORT_FILE}"
+                echo "Spark report copied to ${ORIGINAL_REPORTS_DIR}"
+            } else {
+                echo "Warning: Spark report not found at ${FULL_REPORT_PATH}"
+                currentBuild.result = 'UNSTABLE'
+            }
+        } catch (err) {
+            echo "Initial test run failed: ${err.getMessage()}"
+            currentBuild.result = 'FAILURE'
+        }
+    }
+
+    stage("Rerun Failed Tests") {
+        // Check if there are any failed tests to rerun
+        if (fileExists(FAILED_TESTS_FILE) && readFile(FAILED_TESTS_FILE).trim()) {
+            try {
+                echo 'Found failed tests, executing rerun'
+                sh 'mvn test -Dtest=com.sadhu.testRunner.RerunTestRunner'
+
+                // Store rerun report
+                if (fileExists(FULL_REPORT_PATH)) {
+                    sh "mkdir -p ${RERUN_REPORTS_DIR}"
+                    sh "cp ${FULL_REPORT_PATH} ${RERUN_REPORTS_DIR}/${SPARK_REPORT_FILE}"
+                    echo "Rerun Spark report copied to ${RERUN_REPORTS_DIR}"
+                }
+            } catch (err) {
+                echo "Failed test rerun encountered errors: ${err.getMessage()}"
+                currentBuild.result = 'UNSTABLE'
+            }
+        } else {
+            echo "No failed tests found to rerun"
+        }
+    }
+
+    stage("Publish Reports") {
+        // Publish original report
+        if (fileExists("${ORIGINAL_REPORTS_DIR}/${SPARK_REPORT_FILE}")) {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: ORIGINAL_REPORTS_DIR,
+                reportFiles: SPARK_REPORT_FILE,
+                reportName: 'Spark Test Report (Original)'
+            ])
+        }
+
+        // Publish rerun report if exists
+        if (fileExists("${RERUN_REPORTS_DIR}/${SPARK_REPORT_FILE}")) {
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: RERUN_REPORTS_DIR,
+                reportFiles: SPARK_REPORT_FILE,
+                reportName: 'Spark Test Report (Rerun)'
+            ])
+        }
+
+        // Archive all report files
+        archiveArtifacts artifacts: "${SPARK_REPORT_DIR}/**/*.html", fingerprint: true
+    }
+
+    stage("Report Links") {
+        echo "Build Status: ${currentBuild.result}"
+        if (fileExists("${ORIGINAL_REPORTS_DIR}/${SPARK_REPORT_FILE}")) {
+            echo "Original Report: ${env.BUILD_URL}HTML_20Report_20_28Original_29/"
+        }
+        if (fileExists("${RERUN_REPORTS_DIR}/${SPARK_REPORT_FILE}")) {
+            echo "Rerun Report: ${env.BUILD_URL}HTML_20Report_20_28Rerun_29/"
+        }
+    }
+}
